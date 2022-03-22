@@ -1,9 +1,24 @@
 package sda.training;
 
-public class App 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import sda.training.learning.Car;
+
+public class App
 {
     public static void main( String[] args )
     {
         System.out.println( "Hello World!" );
+
+        HibernateFactory hibernateFactory = new HibernateFactory();
+        SessionFactory sessionFactory = hibernateFactory.getSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        Car car = new Car();
+        car.setName("maluch");
+        session.save(car);
+
+        session.close();
+        sessionFactory.close();
     }
 }
