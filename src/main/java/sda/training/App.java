@@ -38,7 +38,7 @@ public class App
                 System.out.println("Zaimplementuj mnie 🤣");
                 break;
             default:
-                System.out.println("MOJA ZMIANA JEST WAZNIEJSZA");
+                System.out.println("Bardzo sie starałeś, lecz gry nie wybrałeś");
         }
 
 
