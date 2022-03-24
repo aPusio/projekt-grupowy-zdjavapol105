@@ -1,9 +1,11 @@
 package sda.training;
 
+import sda.training.angry_nerds_game.schema.AngryNerdsPlayer;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import sda.training.angry_nerds_game.schema.AngryNerdsShot;
 import sda.training.learning.Car;
 
 public class HibernateFactory {
@@ -17,6 +19,8 @@ public class HibernateFactory {
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
 
         configuration.addAnnotatedClass(Car.class);
+        configuration.addAnnotatedClass(AngryNerdsPlayer.class);
+        configuration.addAnnotatedClass(AngryNerdsShot.class);
         return configuration;
     }
 
