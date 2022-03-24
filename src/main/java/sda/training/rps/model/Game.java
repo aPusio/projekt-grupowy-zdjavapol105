@@ -14,10 +14,11 @@ import java.util.Set;
 @Table(name = "RPS_GAME")
 public class Game {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GAM_ID")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "GAM_PLA_ID", referencedColumnName = "PLA_ID")
     private Player player;
 
@@ -38,4 +39,17 @@ public class Game {
     @OneToMany(mappedBy = "game")
     private Set<Stage> stages;
 
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", player=" + player +
+                ", winStagesNo=" + winStagesNo +
+                ", playerScore=" + playerScore +
+                ", computerScore=" + computerScore +
+                ", result=" + result +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }

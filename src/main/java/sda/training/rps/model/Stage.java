@@ -14,9 +14,10 @@ import javax.persistence.*;
 @Table(name = "RPS_STAGE")
 public class Stage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "STA_ID")
     private Integer id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "STA_GAM_ID", referencedColumnName = "GAM_ID")
     private Game game;
     @Column(name = "STA_PLAYER_MOVE")
@@ -34,5 +35,16 @@ public class Stage {
         this.playerMove = playerMove;
         this.computerMove = computerMove;
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return "Stage{" +
+                "id=" + id +
+                ", game=" + game +
+                ", playerMove=" + playerMove +
+                ", computerMove=" + computerMove +
+                ", result=" + result +
+                '}';
     }
 }

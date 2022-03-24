@@ -14,6 +14,7 @@ import java.util.Set;
 @Table(name = "RPS_PLAYER")
 public class Player {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PLA_ID")
     private Integer id;
     @Column(name = "PLA_NAME")
@@ -26,5 +27,13 @@ public class Player {
 
     public Player(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", score=" + score +
+                '}';
     }
 }
