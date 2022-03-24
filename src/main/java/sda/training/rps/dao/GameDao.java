@@ -30,14 +30,17 @@ public class GameDao implements IGameDao {
     @Override
     public int countGames() {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
-            return (int) session.createQuery("FROM Game g", Game.class).getResultStream().count();
+            return session.createQuery("FROM Game g", Game.class).getResultList().size();
         }
     }
 
     @Override
     public List<Game> findAll(int maxResults, int firstResult) {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
-            List<Game> games = session.createQuery("FROM Game g", Game.class).setMaxResults(maxResults).setFirstResult(firstResult).getResultList();
+            List<Game> games = session.createQuery("FROM Game g", Game.class)
+                    .setMaxResults(maxResults)
+                    .setFirstResult(firstResult)
+                    .getResultList();
 
             return Objects.requireNonNullElse(games, Collections.emptyList());
         }
@@ -62,7 +65,8 @@ public class GameDao implements IGameDao {
             List<Game> games = session.createQuery("SELECT g FROM Game g " +
                     "JOIN g.player p " +
                     "WHERE p.id = :pId " +
-                    "and g.result = null", Game.class).setParameter("pId", player.getId()).getResultList();
+                    "and g.result = null", Game.class).setParameter("pId", player.getId()).
+                    getResultList();
 
             return Objects.requireNonNullElse(games, Collections.emptyList());
         }
