@@ -12,8 +12,9 @@ public interface IPlayerDao {
 
     Player mergeObject(Player player);
 
+    //pilnuj null execption
     List<Player> findBest(int topNumber);
-
+    //pilnuj null execption
     List<Player> findAll();
 
 

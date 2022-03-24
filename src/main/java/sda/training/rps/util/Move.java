@@ -9,8 +9,8 @@ public enum Move {
     SCISSORS(5, "Nożyczki"),
     FIRE(6, "Ogień");
 
-    int moveInt;
-    String moveString;
+    private int moveInt;
+    private String moveString;
 
     Move(int moveInt, String moveString) {
         this.moveInt = moveInt;

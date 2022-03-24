@@ -9,14 +9,15 @@ import sda.training.rps.model.Player;
 import sda.training.rps.util.Result;
 import sda.training.rps.util.ScannerSingleton;
 
+import java.util.Collections;
 import java.util.List;
 
 public class GameService implements IGameService {
-    IGameDao gameDao = new GameDao();
-    IStageDao stageDao = new StageDao();
-    Game game = new Game();
-    IStageService stageService = new StageService();
-    ScannerSingleton scanner = ScannerSingleton.getInstance();
+    private IGameDao gameDao = new GameDao();
+    private IStageDao stageDao = new StageDao();
+    private Game game = new Game();
+    private IStageService stageService = new StageService();
+    private ScannerSingleton scanner = ScannerSingleton.getInstance();
 
     @Override
     public void startNewGame(Player player) {
@@ -44,9 +45,7 @@ public class GameService implements IGameService {
     private void loopStages() {
         Result result;
         boolean continueGame = true;
-        while (game.getPlayerScore() < game.getWinStagesNo() ||
-                game.getComputerScore() < game.getWinStagesNo() ||
-                continueGame) {
+        while (continuationGame(continueGame)) {
             result = stageService.playStage(game);
             addPoints(result);
             continueGame = false;
@@ -54,6 +53,12 @@ public class GameService implements IGameService {
         //ustawienie wyniku gry
         //ustawienie zakonczenia gry (if result win/lose - data zakonczenia)
         gameDao.mergeObject(game);
+    }
+
+    private boolean continuationGame(boolean continueGame) {
+        return game.getPlayerScore() < game.getWinStagesNo() ||
+                game.getComputerScore() < game.getWinStagesNo() ||
+                continueGame;
     }
 
     private void addPoints(Result result) {
@@ -83,7 +88,7 @@ public class GameService implements IGameService {
 
 
     private List<Game> loadListOfOldGames(Player player) {
-        return null;
+        return Collections.emptyList();
     }
 
 

@@ -9,11 +9,11 @@ import sda.training.rps.util.Result;
 import sda.training.rps.util.ScannerSingleton;
 
 public class StageService implements IStageService {
-    IStageDao stageDao = new StageDao();
-    Move playerMove;
-    Move computerMove;
+    private IStageDao stageDao = new StageDao();
+    private Move playerMove;
+    private Move computerMove;
     private Result[][] outcome;
-    ScannerSingleton scanner = ScannerSingleton.getInstance();
+    private ScannerSingleton scanner = ScannerSingleton.getInstance();
 
     @Override
     public Result playStage(Game game) {

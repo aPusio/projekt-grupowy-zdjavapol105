@@ -2,6 +2,7 @@ package sda.training.rps.dao;
 
 import sda.training.rps.model.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerDao implements IPlayerDao {
@@ -22,11 +23,11 @@ public class PlayerDao implements IPlayerDao {
 
     @Override
     public List<Player> findBest(int topNumber) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public List<Player> findAll() {
-        return null;
+        return Collections.emptyList();
     }
 }

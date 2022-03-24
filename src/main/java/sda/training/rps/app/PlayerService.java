@@ -8,8 +8,8 @@ import sda.training.rps.util.ScannerSingleton;
 import java.util.List;
 
 public class PlayerService implements IPlayerService {
-    IPlayerDao playerDao = new PlayerDao();
-    ScannerSingleton scanner = ScannerSingleton.getInstance();
+    private IPlayerDao playerDao = new PlayerDao();
+    private ScannerSingleton scanner = ScannerSingleton.getInstance();
 
     @Override
     public Player choosePlayer() {

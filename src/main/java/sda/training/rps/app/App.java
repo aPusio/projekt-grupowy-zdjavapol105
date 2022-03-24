@@ -4,10 +4,10 @@ import sda.training.rps.model.Player;
 import sda.training.rps.util.ScannerSingleton;
 
 public class App implements IApp {
-    Player player;
-    IPlayerService playerService = new PlayerService();
-    IGameService gameService = new GameService();
-    ScannerSingleton scanner = ScannerSingleton.getInstance();
+    private Player player;
+    private IPlayerService playerService = new PlayerService();
+    private IGameService gameService = new GameService();
+    private ScannerSingleton scanner = ScannerSingleton.getInstance();
 
     @Override
     public void startRPS() {
