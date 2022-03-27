@@ -9,6 +9,7 @@ import sda.training.rps.model.Player;
 import sda.training.rps.util.Result;
 import sda.training.rps.util.ScannerSingleton;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,54 +25,88 @@ public class GameService implements IGameService {
         int winStagesNo = loadStagesProperty();
         game = createGame(player, winStagesNo);
         loopStages();
-
-        /*      wczytuje od gracz i ustawia ilosc wygranych etapow
-         *      Twozy instancje gry
-         *      petla stagy
-         * */
     }
 
     private int loadStagesProperty() {
-        return 0;
+        System.out.print("Podaj ile punktów potrzeba na wygraną: ");
+        return scanner.scannerInt();
     }
 
     private Game createGame(Player player, int winStagesNo) {
         game.setWinStagesNo(winStagesNo);
         game.setPlayer(player);
-        //ustawienie poczatku gry
+        game.setComputerScore(0);
+        game.setPlayerScore(0);
+        game.setStartDate(LocalDateTime.now());
+
         return gameDao.mergeObject(game);
     }
 
     private void loopStages() {
         Result result;
         boolean continueGame = true;
-        while (continuationGame(continueGame)) {
+        while (isContinuable(continueGame)) {
             result = stageService.playStage(game);
             addPoints(result);
-            continueGame = false;
+            continueGame = keepPlaying();
         }
-        //ustawienie wyniku gry
-        //ustawienie zakonczenia gry (if result win/lose - data zakonczenia)
+        if (game.getPlayerScore() == game.getWinStagesNo()) {
+            game.setResult(Result.WIN);
+        }
+        if (game.getComputerScore() == game.getWinStagesNo()) {
+            game.setResult(Result.LOSE);
+        }
+        if (isFinished()) {
+            game.setEndDate(LocalDateTime.now());
+        }
+
         gameDao.mergeObject(game);
     }
 
-    private boolean continuationGame(boolean continueGame) {
+    private boolean keepPlaying() {
+        System.out.print("Czy chcesz kontynuować?(y/n): ");
+        String playerChoice = scanner.scannerLine();
+        switch (playerChoice.toLowerCase()) {
+            case "n":
+            case "no":
+            case "nie":
+                return false;
+            default:
+                return true;
+        }
+
+
+    }
+
+    private boolean isContinuable(boolean continueGame) {
         return game.getPlayerScore() < game.getWinStagesNo() ||
                 game.getComputerScore() < game.getWinStagesNo() ||
                 continueGame;
     }
 
     private void addPoints(Result result) {
+        game.setPlayerScore(game.getPlayerScore() + result.getPlayerPoint());
+        game.setComputerScore(game.getComputerScore() + result.getComputerPoint());
+    }
+
+    private boolean isFinished() {
+        return game.getResult().equals(Result.WIN) || game.getResult().equals(Result.LOSE);
     }
 
     @Override
     public void loadOldGame(Player player) {
         showCustomeMessage();
-        List<Game> games = loadListOfOldGames(player);
-        if (games != null) {
-            games.forEach(System.out::println);
+        List<Game> games = gameDao.findAllNotCompleteOfPlayer(player);
+        if (!games.isEmpty()) {
+            games.forEach(game -> System.out.println((games.indexOf(game) + 1) + "."
+                    + " Gra o ID: " + game.getId()
+                    + " Ilość koniecznych wygranych: " + game.getWinStagesNo()
+                    + " Punkty gracza: " + game.getPlayerScore()
+                    + " Punkty komputera: " + game.getComputerScore()
+                    + " Data rozpoczęćia: " + game.getStartDate()
+
+            ));
         } else {
-            System.out.println();
             return;
         }
         int choice = getPlayerChoice(games.size());
@@ -85,12 +120,6 @@ public class GameService implements IGameService {
 
     private void showCustomeMessage() {
     }
-
-
-    private List<Game> loadListOfOldGames(Player player) {
-        return Collections.emptyList();
-    }
-
 
     private int getPlayerChoice(int size) {
         return 0;

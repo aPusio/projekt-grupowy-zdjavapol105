@@ -20,7 +20,7 @@ public class Player {
     @Column(name = "PLA_NAME")
     private String name;
     @Column(name = "PAL_TOTAL_SCORE")
-    private Integer score;
+    private Integer score = 0;
 
     @OneToMany(mappedBy = "player")
     private Set<Game> games;
@@ -31,9 +31,6 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
-                "name='" + name + '\'' +
-                ", score=" + score +
-                '}';
+        return "Gracz: " + name + " Wynik: " + score;
     }
 }

@@ -41,15 +41,13 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Game{" +
-                "id=" + id +
-                ", player=" + player +
-                ", winStagesNo=" + winStagesNo +
-                ", playerScore=" + playerScore +
-                ", computerScore=" + computerScore +
-                ", result=" + result +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                '}';
+        return  "Gra o ID: " + id +
+                " Gracz: " + player.getName() +
+                " Ilość koniecznych wygranych: " + winStagesNo +
+                " Punkty gracza: " + playerScore +
+                " Punkty komputera: " + computerScore +
+                " Wynik rozgrywki: " + result +
+                " Data rozpoczęćia: " + startDate +
+                " Data zakończnia: " + endDate;
     }
 }

@@ -13,7 +13,7 @@ public class App implements IApp {
     public void startRPS() {
         showOpeningCredits();
         choosePlayer();
-        runMenu();
+       // runMenu();
     }
 
     private void showOpeningCredits() {

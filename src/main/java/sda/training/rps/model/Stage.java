@@ -1,6 +1,5 @@
 package sda.training.rps.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sda.training.rps.util.Move;

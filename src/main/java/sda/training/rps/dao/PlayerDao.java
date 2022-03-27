@@ -7,6 +7,7 @@ import sda.training.rps.model.Player;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PlayerDao implements IPlayerDao {
     @Override
@@ -19,9 +20,10 @@ public class PlayerDao implements IPlayerDao {
     @Override
     public Player findByName(String name) {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
-            return session.createQuery("FROM Player p WHERE name = :n", Player.class)
+             Optional<Player> optional =  session.createQuery("FROM Player p WHERE name = :n", Player.class)
                     .setParameter("n", name)
-                    .getSingleResult();
+                    .uniqueResultOptional();
+            return optional.orElse(null);
         }
     }
 

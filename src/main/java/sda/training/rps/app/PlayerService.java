@@ -11,11 +11,17 @@ public class PlayerService implements IPlayerService {
     private IPlayerDao playerDao = new PlayerDao();
     private ScannerSingleton scanner = ScannerSingleton.getInstance();
 
+
     @Override
     public Player choosePlayer() {
         String name = insertName();
         Player player = playerDao.findByName(name);
         if (player != null) {
+            System.out.println("Witaj "
+                    + player.getName()
+                    + "! Twój dotychczasowy wynik to: "
+                    + player.getScore()
+                    + ".");
             return player;
         } else {
             return createNewPlayer(name);
@@ -24,6 +30,7 @@ public class PlayerService implements IPlayerService {
 
     private Player createNewPlayer(String name) {
         Player player = new Player(name);
+        System.out.println("Witaj " + name + "! Miłej gry :)");
         return playerDao.mergeObject(player);
     }
 
@@ -34,20 +41,25 @@ public class PlayerService implements IPlayerService {
 
 
     private String insertName() {
-        return null;
+        System.out.print("Podaj swój nick: ");
+        return scanner.scannerLine();
     }
 
     @Override
     public void loadTopPlayers() {
-        System.out.println();
+
+        System.out.println("Top 10 najlepszych graczy:");
         List<Player> players = playerDao.findBest(10);
-        // pamietaj by nie wyswietlac nulli
-        players.forEach(System.out::println);
+        players.forEach(player ->
+                System.out.println((players.indexOf(player) + 1) + ". " + player)
+        );
         backToMenu();
     }
 
+
     private void backToMenu() {
-        System.out.print("");
+        System.out.println();
+        System.out.println("Wprowadź dowolny znak by powrócić.");
         scanner.scannerLine();
     }
 
