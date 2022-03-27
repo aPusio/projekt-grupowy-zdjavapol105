@@ -1,5 +1,6 @@
 package sda.training.rps.app;
 
+import sda.training.rps.model.MainMenu;
 import sda.training.rps.model.Player;
 import sda.training.rps.util.ScannerSingleton;
 
@@ -12,15 +13,11 @@ public class App implements IApp {
     @Override
     public void startRPS() {
         showOpeningCredits();
-        choosePlayer();
-       // runMenu();
+        player = playerService.choosePlayer();
+        runMenu();
     }
 
     private void showOpeningCredits() {
-    }
-
-    private void choosePlayer() {
-        player = playerService.choosePlayer();
     }
 
     private void runMenu() {
@@ -32,19 +29,45 @@ public class App implements IApp {
     }
 
     private void showMenu() {
+        System.out.println("Witaj " + player.getName() + "!");
+        System.out.println();
+        System.out.println("1. Zacznij grę.");
+        System.out.println("2. Wczytaj niedokończoną grę.");
+        System.out.println("3. Top 10 graczy.");
+        System.out.println("4. Pokaż wszystkie, skończone gry.");
+        System.out.println("5. Pokaż wszystkie, ukończone, twoje gry.");
+        System.out.println("6. Zmień użytkownika");
+        System.out.println("7. Wyjdź z Papier-Kamień-Nożyczki");
     }
 
     private boolean getPlayersChoice() {
+        MainMenu option = MainMenu.getOptionByIndex(scanner.scannerInt());
 
+        switch (option) {
+            case NEW_GAME:
+                gameService.startNewGame(player);
+                break;
+            case LOAD_GAME:
+                gameService.loadOldGame(player);
+                break;
+            case TOP10:
+                playerService.loadTopPlayers();
+                break;
+            case ALL_GAMES:
+                gameService.loadFinishedGames();
+                break;
+            case YOUR_GAMES:
+                gameService.loadFinishedGamesOfPlayer(player);
+                break;
+            case CHANGE_USER:
+                player = playerService.choosePlayer();
+                break;
+            case QUIT:
+                return false;
+            default:
+                break;
+        }
 
-      /*  1. Zacznij gre startNewGame(player)
-          2  Wczytaj gre loadOldGame(player)
-          3. Top 10 loadTopPlayers()
-          4. Ostatnie gry listAllGames()
-          5. Pokaż gry danego gracza  loadFinishedGames(player)
-          6. Zmien uzytkownia choosePlayer()
-          7. Wyjdz z gry return false;
-       */
         return true;
     }
 

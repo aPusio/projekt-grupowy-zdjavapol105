@@ -3,6 +3,7 @@ package sda.training;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import sda.training.learning.Car;
+import sda.training.rps.app.IApp;
 
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ public class App
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("WYBIERZ GRE: ");
-        System.out.println("1. Tu wstaw gre 🚀🚀🚀");
+        System.out.println("1. Kamień-Papier-Nożyczki");
         System.out.println("2. Tu wstaw gre 🚀🚀🚀");
         System.out.println("3. Tu wstaw gre 🚀🚀🚀");
         System.out.println("4. Tu wstaw gre 🚀🚀🚀");
@@ -26,7 +27,8 @@ public class App
 
         switch (gameNumber){
             case 1:
-                System.out.println("Zaimplementuj mnie 🤣");
+                IApp app = new sda.training.rps.app.App();
+                app.startRPS();
                 break;
             case 2:
                 System.out.println("Zaimplementuj mnie 🤣");
@@ -41,6 +43,7 @@ public class App
                 System.out.println("Bardzo sie starałeś, lecz gry nie wybrałeś");
         }
 
+        System.out.println("Koniec gry!");
 
         session.close();
         sessionFactory.close();

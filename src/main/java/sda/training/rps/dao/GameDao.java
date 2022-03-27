@@ -28,16 +28,31 @@ public class GameDao implements IGameDao {
     }
 
     @Override
-    public int countGames() {
+    public int countFinishedGames() {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
-            return session.createQuery("FROM Game g", Game.class).getResultList().size();
+            return session.createQuery("SELECT g FROM Game g " +
+                    "WHERE g.result IS NOT null", Game.class).getResultList().size();
         }
     }
 
     @Override
-    public List<Game> findAll(int maxResults, int firstResult) {
+    public int countFinishedGamesOfPlayer(Player player) {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
-            List<Game> games = session.createQuery("FROM Game g", Game.class)
+            return session.createQuery("SELECT g FROM Game g " +
+                            "JOIN g.player p " +
+                            "WHERE p.name = :playerName " +
+                            "and g.result IS NOT null", Game.class)
+                    .setParameter("playerName", player.getName())
+                    .getResultList().size();
+        }
+    }
+
+
+    @Override
+    public List<Game> findAllFinished(int maxResults, int firstResult) {
+        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
+            List<Game> games = session.createQuery("SELECT g FROM Game g " +
+                            "WHERE g.result IS NOT null", Game.class)
                     .setMaxResults(maxResults)
                     .setFirstResult(firstResult)
                     .getResultList();
@@ -47,12 +62,15 @@ public class GameDao implements IGameDao {
     }
 
     @Override
-    public List<Game> findAllOfPlayer(Player player) {
+    public List<Game> findAllFinishedOfPlayer(int maxResults, int firstResult, Player player) {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
             List<Game> games = session.createQuery("SELECT g FROM Game g " +
-                    "JOIN g.player p " +
-                    "WHERE p.id = :pId", Game.class)
+                            "JOIN g.player p " +
+                            "WHERE p.id = :pId " +
+                            "and g.result IS NOT null", Game.class)
                     .setParameter("pId", player.getId())
+                    .setMaxResults(maxResults)
+                    .setFirstResult(firstResult)
                     .getResultList();
 
             return Objects.requireNonNullElse(games, Collections.emptyList());
@@ -63,9 +81,9 @@ public class GameDao implements IGameDao {
     public List<Game> findAllNotCompleteOfPlayer(Player player) {
         try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
             List<Game> games = session.createQuery("SELECT g FROM Game g " +
-                    "JOIN g.player p " +
-                    "WHERE p.id = :pId " +
-                    "and g.result = null", Game.class).setParameter("pId", player.getId()).
+                            "JOIN g.player p " +
+                            "WHERE p.id = :pId " +
+                            "and g.result = null", Game.class).setParameter("pId", player.getId()).
                     getResultList();
 
             return Objects.requireNonNullElse(games, Collections.emptyList());

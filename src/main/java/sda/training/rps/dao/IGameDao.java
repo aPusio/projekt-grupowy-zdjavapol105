@@ -10,11 +10,13 @@ public interface IGameDao {
 
     Game mergeObject(Game game);
 
-    int countGames();
+    int countFinishedGames();
 
-    List<Game> findAll(int maxResults, int firstResult);
+    int countFinishedGamesOfPlayer(Player player);
 
-    List<Game> findAllOfPlayer(Player player);
+    List<Game> findAllFinished(int maxResults, int firstResult);
+
+    List<Game> findAllFinishedOfPlayer(int maxResults, int firstResult, Player player);
 
     List<Game> findAllNotCompleteOfPlayer(Player player);
 

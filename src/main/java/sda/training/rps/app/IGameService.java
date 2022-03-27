@@ -8,9 +8,9 @@ public interface IGameService {
 
     void loadOldGame(Player player);
 
-    void loadFinishedGames(Player player);
+    void loadFinishedGamesOfPlayer(Player player);
 
-    void listAllGames();
+    void loadFinishedGames();
 
 
 

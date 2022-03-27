@@ -10,7 +10,7 @@ import sda.training.rps.util.Result;
 import sda.training.rps.util.ScannerSingleton;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.time.ZoneOffset;
 import java.util.List;
 
 public class GameService implements IGameService {
@@ -74,43 +74,52 @@ public class GameService implements IGameService {
             default:
                 return true;
         }
-
-
     }
 
     private boolean isContinuable(boolean continueGame) {
-        return game.getPlayerScore() < game.getWinStagesNo() ||
-                game.getComputerScore() < game.getWinStagesNo() ||
+        return game.getPlayerScore() < game.getWinStagesNo() &&
+                game.getComputerScore() < game.getWinStagesNo() &&
                 continueGame;
     }
 
     private void addPoints(Result result) {
-        game.setPlayerScore(game.getPlayerScore() + result.getPlayerPoint());
-        game.setComputerScore(game.getComputerScore() + result.getComputerPoint());
+        if (addPointsConditions(result)) {
+            game.setPlayerScore(game.getPlayerScore() + result.getPlayerPoint());
+            game.setComputerScore(game.getComputerScore() + result.getComputerPoint());
+        }
+    }
+
+    private boolean addPointsConditions(Result result) {
+        return result != null && game.getPlayerScore() != null && game.getComputerScore() != null;
     }
 
     private boolean isFinished() {
-        return game.getResult().equals(Result.WIN) || game.getResult().equals(Result.LOSE);
+        return game.getResult() != null;
     }
 
     @Override
     public void loadOldGame(Player player) {
         showCustomeMessage();
         List<Game> games = gameDao.findAllNotCompleteOfPlayer(player);
-        if (!games.isEmpty()) {
-            games.forEach(game -> System.out.println((games.indexOf(game) + 1) + "."
-                    + " Gra o ID: " + game.getId()
-                    + " Ilość koniecznych wygranych: " + game.getWinStagesNo()
-                    + " Punkty gracza: " + game.getPlayerScore()
-                    + " Punkty komputera: " + game.getComputerScore()
-                    + " Data rozpoczęćia: " + game.getStartDate()
 
-            ));
+        if (!games.isEmpty()) {
+            games.forEach(game -> System.out.println((games.indexOf(game) + 1) + ".\t"
+                    + printGame(game))
+            );
         } else {
+            System.out.println("Brak niedokończonych gier");
             return;
         }
+
         int choice = getPlayerChoice(games.size());
+        if (choice == -1) {
+            return;
+        }
         game = games.get(choice);
+
+        System.out.println("Wybrano grę:");
+        System.out.println(printGame(game));
+
         if (game.getPlayerScore() == 0 &&
                 game.getComputerScore() == 0) {
             loadScores();
@@ -118,11 +127,28 @@ public class GameService implements IGameService {
         loopStages();
     }
 
+    private String printGame(Game game) {
+        return "Gra o ID: " + game.getId()
+                + " Ilość koniecznych wygranych: " + game.getWinStagesNo()
+                + " Punkty gracza: " + game.getPlayerScore()
+                + " Punkty komputera: " + game.getComputerScore()
+                + " Data rozpoczęćia: " + game.getStartDate();
+    }
+
     private void showCustomeMessage() {
+        //TODO implementacja tekstu wyswietlanego na gorze listy gier do wczytania
+
     }
 
     private int getPlayerChoice(int size) {
-        return 0;
+        System.out.print("Wybierz którą grę chcesz wczytać. Wprowadź 0 by cofnąć do poprzedniego menu: ");
+
+        int choice = scanner.scannerInt();
+        if (choice <= 0 || choice > size + 1) {
+            return -1;
+        } else {
+            return choice - 1;
+        }
     }
 
     private void loadScores() {
@@ -131,11 +157,20 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public void loadFinishedGames(Player player) {
-        List<Game> games = gameDao.findAllOfPlayer(player);
-        // pamietaj by nie wyswietlac nulli
-        games.forEach(System.out::println);
-        backToMenu();
+    public void loadFinishedGamesOfPlayer(Player player) {
+        int page = 1;
+        while (page != 0) {
+            List<Game> games = gameDao.findAllFinishedOfPlayer(10, ((page * 10) - 10), player);
+
+            if (games.isEmpty()) {
+                System.out.println("Brak ukończonych gier przez gracza: " + player.getName());
+                backToMenu();
+                return;
+            }
+
+            listLoadedGames(page, games);
+            page = controlListAllGames(page, player);
+        }
     }
 
     private void backToMenu() {
@@ -144,22 +179,124 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public void listAllGames() {
+    public void loadFinishedGames() {
         int page = 1;
         while (page != 0) {
-            List<Game> games = gameDao.findAll(10, ((page * 10) - 10));
-            // pamietaj by nie wyswietlac nulli
-            games.forEach(System.out::println);
+            List<Game> games = gameDao.findAllFinished(10, ((page * 10) - 10));
+
+            if (games.isEmpty()) {
+                System.out.println("Brak ukończonych gier.");
+                backToMenu();
+                return;
+            }
+
+            listLoadedGames(page, games);
             page = controlListAllGames(page);
         }
     }
 
-    private int controlListAllGames(int page) {
-        // if (page == 1) else if (page == (int)Math.ceil((gameDao.countGames() / 10.0)) else;
-        // scanner.scannerInt();
-        // case page
+    private void listLoadedGames(int page, List<Game> games) {
+        for (Game game : games) {
+            System.out.println((games.indexOf(game) + 1 + 10 * (page - 1)) + ".\t"
+                    + "Gra o ID: " + game.getId()
+                    + " Gracz: " + game.getPlayer().getName()
+                    + " Ilość koniecznych wygranych: " + game.getWinStagesNo()
+                    + " Punkty gracza: " + game.getPlayerScore()
+                    + " Punkty komputera: " + game.getComputerScore()
+                    + " Wynik: " + game.getResult()
+                    + " Data zakończenia: " + game.getEndDate()
+                    + " Łączny czas gry: " + getTime(game)
+            );
+        }
+    }
 
-        return 0;
+    private String getTime(Game game) {
+        long second;
+        if (game.getEndDate() == null || game.getStartDate() == null) {
+            second = 0;
+        } else {
+            second = game.getEndDate().toEpochSecond(ZoneOffset.UTC) - game.getStartDate().toEpochSecond(ZoneOffset.UTC);
+        }
+        int day = 0;
+        int hour = 0;
+        int minute = 0;
+
+        if (second > 59) {
+            minute = (int) second / 60;
+            second = (int) second % 60;
+        }
+        if (minute > 59) {
+            hour = minute / 60;
+            minute = minute % 60;
+        }
+        if (hour > 23) {
+            day = hour / 24;
+            hour = hour % 24;
+        }
+
+        return day + ":" + hour + ":" + minute + ":" + second;
+    }
+
+    private int controlListAllGames(int page, Player player) {
+        int gamesCountAfterRound = (int) Math.ceil((gameDao.countFinishedGamesOfPlayer(player) / 10.0));
+        if (page == 1 && gamesCountAfterRound == 1) {
+            System.out.println("        0 - cofnij");
+            scanner.scannerInt();
+            return 0;
+        } else if (page == 1) {
+            System.out.println("        0 - cofnij      2>>");
+            if (scanner.scannerInt() == 2) {
+                return ++page;
+            }
+            return 0;
+        } else if (page < gamesCountAfterRound) {
+            System.out.println("<<1     0 - cofnij      2>>");
+            switch (scanner.scannerInt()) {
+                case 1:
+                    return --page;
+                case 2:
+                    return ++page;
+                default:
+                    return 0;
+            }
+        } else {
+            System.out.println("<<1     0 - cofnij     ");
+            if (scanner.scannerInt() == 1) {
+                return --page;
+            }
+            return 0;
+        }
+    }
+
+    private int controlListAllGames(int page) {
+        int gamesCountAfterRound = (int) Math.ceil((gameDao.countFinishedGames() / 10.0));
+        if (page == 1 && gamesCountAfterRound == 1) {
+            System.out.println("        0 - cofnij");
+            scanner.scannerInt();
+            return 0;
+        } else if (page == 1) {
+            System.out.println("        0 - cofnij      2>>");
+            if (scanner.scannerInt() == 2) {
+                return ++page;
+            }
+            return 0;
+        } else if (page < gamesCountAfterRound) {
+            System.out.println("<<1     0 - cofnij      2>>");
+            switch (scanner.scannerInt()) {
+                case 1:
+                    return --page;
+                case 2:
+                    return ++page;
+                default:
+                    return 0;
+            }
+        } else {
+            System.out.println("<<1     0 - cofnij     ");
+            if (scanner.scannerInt() == 1) {
+                return --page;
+            }
+            return 0;
+        }
     }
 
 }
