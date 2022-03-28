@@ -1,8 +1,6 @@
 package sda.training.rps.app;
 
 import sda.training.rps.dao.GameDao;
-import sda.training.rps.dao.IGameDao;
-import sda.training.rps.dao.IStageDao;
 import sda.training.rps.dao.StageDao;
 import sda.training.rps.model.Game;
 import sda.training.rps.model.Player;
@@ -12,15 +10,21 @@ import sda.training.rps.util.ScannerSingleton;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 
-public class GameService implements IGameService {
-    private IGameDao gameDao = new GameDao();
-    private IStageDao stageDao = new StageDao();
+public class GameService {
+    private final GameDao gameDao = new GameDao();
+    private final StageDao stageDao = new StageDao();
     private Game game = new Game();
-    private IStageService stageService = new StageService();
-    private ScannerSingleton scanner = ScannerSingleton.getInstance();
+    private final PlayerService playerService;
+    private final StageService stageService;
+    private final ScannerSingleton scanner = ScannerSingleton.getInstance();
 
-    @Override
+    public GameService(PlayerService playerService) {
+        this.playerService = playerService;
+        this.stageService = new StageService(playerService);
+    }
+
     public void startNewGame(Player player) {
         int winStagesNo = loadStagesProperty();
         game = createGame(player, winStagesNo);
@@ -33,6 +37,7 @@ public class GameService implements IGameService {
     }
 
     private Game createGame(Player player, int winStagesNo) {
+        game.setId(null);
         game.setWinStagesNo(winStagesNo);
         game.setPlayer(player);
         game.setComputerScore(0);
@@ -48,18 +53,28 @@ public class GameService implements IGameService {
         while (isContinuable(continueGame)) {
             result = stageService.playStage(game);
             addPoints(result);
-            continueGame = keepPlaying();
+            System.out.println("Ty: " + game.getPlayerScore() + " \tPrzeciwnik: " + game.getComputerScore());
+            if (isContinuable(true)) {
+                continueGame = keepPlaying();
+            }
         }
-        if (game.getPlayerScore() == game.getWinStagesNo()) {
+        if (Objects.equals(game.getPlayerScore(), game.getWinStagesNo())) {
             game.setResult(Result.WIN);
         }
-        if (game.getComputerScore() == game.getWinStagesNo()) {
+        if (Objects.equals(game.getComputerScore(), game.getWinStagesNo())) {
             game.setResult(Result.LOSE);
         }
         if (isFinished()) {
             game.setEndDate(LocalDateTime.now());
         }
 
+        if (game.getResult() == null) {
+            System.out.println("Gra chwilowo przerwana.");
+        } else {
+            System.out.println("Gra skończona z wynikiem " + game.getResult());
+        }
+
+        playerService.updatePlayer(game.getPlayer());
         gameDao.mergeObject(game);
     }
 
@@ -97,14 +112,17 @@ public class GameService implements IGameService {
         return game.getResult() != null;
     }
 
-    @Override
+
     public void loadOldGame(Player player) {
         showCustomeMessage();
         List<Game> games = gameDao.findAllNotCompleteOfPlayer(player);
 
         if (!games.isEmpty()) {
-            games.forEach(game -> System.out.println((games.indexOf(game) + 1) + ".\t"
-                    + printGame(game))
+            games.forEach(this::loadScores);
+            games.forEach(oldGame ->
+                    System.out.println((games.indexOf(oldGame) + 1)
+                            + ".\t"
+                            + printGame(oldGame))
             );
         } else {
             System.out.println("Brak niedokończonych gier");
@@ -120,23 +138,19 @@ public class GameService implements IGameService {
         System.out.println("Wybrano grę:");
         System.out.println(printGame(game));
 
-        if (game.getPlayerScore() == 0 &&
-                game.getComputerScore() == 0) {
-            loadScores();
-        }
         loopStages();
     }
 
     private String printGame(Game game) {
-        return "Gra o ID: " + game.getId()
-                + " Ilość koniecznych wygranych: " + game.getWinStagesNo()
+        return "Ilość koniecznych wygranych: " + game.getWinStagesNo()
                 + " Punkty gracza: " + game.getPlayerScore()
                 + " Punkty komputera: " + game.getComputerScore()
                 + " Data rozpoczęćia: " + game.getStartDate();
     }
 
     private void showCustomeMessage() {
-        //TODO implementacja tekstu wyswietlanego na gorze listy gier do wczytania
+        System.out.println("Lista niedokończonmych gier\n" +
+                "Wprowadź numer gry którą chcesz kontynuować");
 
     }
 
@@ -151,12 +165,12 @@ public class GameService implements IGameService {
         }
     }
 
-    private void loadScores() {
-        game.setPlayerScore(stageDao.findAllByGameWinByPlayer(game).size());
-        game.setComputerScore(stageDao.findAllByGameWinByComputer(game).size());
+    private void loadScores(Game oldGame) {
+        oldGame.setPlayerScore(stageDao.findAllByGameWinByPlayer(oldGame).size());
+        oldGame.setComputerScore(stageDao.findAllByGameWinByComputer(oldGame).size());
     }
 
-    @Override
+
     public void loadFinishedGamesOfPlayer(Player player) {
         int page = 1;
         while (page != 0) {
@@ -174,11 +188,12 @@ public class GameService implements IGameService {
     }
 
     private void backToMenu() {
-        System.out.print("");
+        System.out.println();
+        System.out.print("Wciśnij ENTER by wrócić.");
         scanner.scannerLine();
     }
 
-    @Override
+
     public void loadFinishedGames() {
         int page = 1;
         while (page != 0) {
@@ -234,7 +249,7 @@ public class GameService implements IGameService {
             hour = hour % 24;
         }
 
-        return day + ":" + hour + ":" + minute + ":" + second;
+        return day + "d:" + hour + "h:" + minute + "m:" + second + "s";
     }
 
     private int controlListAllGames(int page, Player player) {

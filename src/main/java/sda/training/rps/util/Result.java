@@ -9,8 +9,8 @@ public enum Result {
     LOSE(0, 1),
     DRAW(0, 0);
 
-    private int playerPoint;
-    private int computerPoint;
+    private final int playerPoint;
+    private final int computerPoint;
 
     Result(int playerPoint, int computerPoint) {
         this.playerPoint = playerPoint;

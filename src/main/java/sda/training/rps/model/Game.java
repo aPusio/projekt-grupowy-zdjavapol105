@@ -41,7 +41,7 @@ public class Game {
 
     @Override
     public String toString() {
-        return  "Gra o ID: " + id +
+        return "Gra o ID: " + id +
                 " Gracz: " + player.getName() +
                 " Ilość koniecznych wygranych: " + winStagesNo +
                 " Punkty gracza: " + playerScore +

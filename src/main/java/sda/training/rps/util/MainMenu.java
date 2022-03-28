@@ -1,4 +1,4 @@
-package sda.training.rps.model;
+package sda.training.rps.util;
 
 import lombok.Getter;
 
@@ -6,22 +6,23 @@ import java.util.Arrays;
 
 @Getter
 public enum MainMenu {
-    NEW_GAME(1),
-    LOAD_GAME(2),
-    TOP10(3),
-    ALL_GAMES(4),
-    YOUR_GAMES(5),
-    CHANGE_USER(6),
-    QUIT(7),
-    OTHER(8);
+    RULES(1),
+    NEW_GAME(2),
+    LOAD_GAME(3),
+    TOP10(4),
+    ALL_GAMES(5),
+    YOUR_GAMES(6),
+    CHANGE_USER(7),
+    QUIT(8),
+    OTHER(9);
 
-    private int value;
+    private final int value;
 
     MainMenu(int value) {
         this.value = value;
     }
 
-    public static MainMenu getOptionByIndex(int choice){
+    public static MainMenu getOptionByIndex(int choice) {
         return Arrays.stream(MainMenu.values())
                 .filter(en -> en.getValue() == choice)
                 .findFirst()

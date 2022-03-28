@@ -1,6 +1,7 @@
 package sda.training.rps.dao;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import sda.training.HibernateFactory;
 import sda.training.rps.model.Game;
 import sda.training.rps.model.Player;
@@ -11,39 +12,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class StageDao implements IStageDao {
-    @Override
+public class StageDao {
+
     public Stage findById(int id) {
-        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
+        try (SessionFactory factory = new HibernateFactory().getSessionFactory();
+             Session session = factory.openSession()) {
             return session.find(Stage.class, id);
         }
     }
 
-    @Override
+
     public void insertObject(Stage stage) {
-        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
+        try (SessionFactory factory = new HibernateFactory().getSessionFactory();
+             Session session = factory.openSession()) {
             session.beginTransaction();
             session.persist(stage);
             session.getTransaction().commit();
+            session.close();
         }
     }
 
-    @Override
-    public List<Stage> findAllByGame(Game game) {
-        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
-            List<Stage> stages = session.createQuery("SELECT s FROM Stage s " +
-                            "JOIN s.game g " +
-                            "WHERE g.id = :gId", Stage.class)
-                    .setParameter("gId", game.getId())
-                    .getResultList();
-
-            return Objects.requireNonNullElse(stages, Collections.emptyList());
-        }
-    }
-
-    @Override
     public List<Stage> findAllByGameWinByPlayer(Game game) {
-        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
+        try (SessionFactory factory = new HibernateFactory().getSessionFactory();
+             Session session = factory.openSession()) {
             List<Stage> stages = session.createQuery("SELECT s FROM Stage s " +
                             "JOIN s.game g " +
                             "WHERE g.id = :gId " +
@@ -51,14 +42,16 @@ public class StageDao implements IStageDao {
                     .setParameter("gId", game.getId())
                     .setParameter("res", Result.WIN)
                     .getResultList();
-
+            session.close();
+            factory.close();
             return Objects.requireNonNullElse(stages, Collections.emptyList());
         }
     }
 
-    @Override
+
     public List<Stage> findAllByGameWinByComputer(Game game) {
-        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
+        try (SessionFactory factory = new HibernateFactory().getSessionFactory();
+             Session session = factory.openSession()) {
             List<Stage> stages = session.createQuery("SELECT s FROM Stage s " +
                             "JOIN s.game g " +
                             "WHERE g.id = :gId " +
@@ -66,21 +59,24 @@ public class StageDao implements IStageDao {
                     .setParameter("gId", game.getId())
                     .setParameter("res", Result.LOSE)
                     .getResultList();
-
+            session.close();
+            factory.close();
             return Objects.requireNonNullElse(stages, Collections.emptyList());
         }
     }
 
-    @Override
+
     public List<Stage> findAllByPlayer(Player player) {
-        try (Session session = new HibernateFactory().getSessionFactory().openSession()) {
+        try (SessionFactory factory = new HibernateFactory().getSessionFactory();
+             Session session = factory.openSession()) {
             List<Stage> stages = session.createQuery("SELECT s FROM Stage s " +
                             "JOIN s.game g " +
                             "JOIN g.player p  " +
                             "WHERE p.id = :pId", Stage.class)
                     .setParameter("pId", player.getId())
                     .getResultList();
-
+            session.close();
+            factory.close();
             return Objects.requireNonNullElse(stages, Collections.emptyList());
         }
     }

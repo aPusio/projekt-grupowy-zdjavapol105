@@ -35,15 +35,4 @@ public class Stage {
         this.computerMove = computerMove;
         this.result = result;
     }
-
-    @Override
-    public String toString() {
-        return "Stage{" +
-                "id=" + id +
-                ", game=" + game +
-                ", playerMove=" + playerMove +
-                ", computerMove=" + computerMove +
-                ", result=" + result +
-                '}';
-    }
 }
