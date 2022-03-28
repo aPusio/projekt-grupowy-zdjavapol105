@@ -32,7 +32,7 @@ public class GameMenu {
     }
 
     public void clearMenu() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 40; i++) {
             System.out.println();
             //drukuje 20 pustych lini zeby to jakoś wyglądało
         }
@@ -48,8 +48,8 @@ public class GameMenu {
                 case 1:
                     clearMenu();
                     System.out.println("Wybrałeś Enter Name Player :");
-                    enterPlayerName("Podaj swój nick :");
-
+                    SinglePlayerGame singlePlayerGame = new SinglePlayerGame();
+                    singlePlayerGame.startGame();
                     break;
                 case 2:
                     clearMenu();
@@ -66,17 +66,6 @@ public class GameMenu {
     private int enterNumber() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
-    }
-
-    private String enterString() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
-
-    private String enterPlayerName(String text){
-        System.out.println(text);
-        String result = enterString();
-       return result;
     }
 
 }

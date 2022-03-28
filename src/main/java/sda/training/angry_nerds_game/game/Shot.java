@@ -11,14 +11,13 @@ public class Shot {
         return shot;
     }
 
-    //TODO oszacować ile elementów strzału generować narazie jest 30
-
     public void genarateShotLine(Integer velocityX, Integer velocityY, Integer wind, Integer gravity) {
 
+        int maxX = SingletonGameConfig.getInstance().getMaxX();
         int posX = 0;
         int posY = 0;
 
-        for (int i = 0; i < 30; i++) {
+        while(posX < maxX || posY > 0) {
             posX = posX + velocityX;
             posY = posY + velocityY;
             shot.add(new Point(posX, posY, '*'));

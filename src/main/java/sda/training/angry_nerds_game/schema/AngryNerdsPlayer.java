@@ -9,6 +9,11 @@ import java.util.Set;
 @Data
 @Table(name = "Angry_Player")
 public class AngryNerdsPlayer {
+
+        public AngryNerdsPlayer(String name) {
+                this.name = name;
+        }
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer id;
