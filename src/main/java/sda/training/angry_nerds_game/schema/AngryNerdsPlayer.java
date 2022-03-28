@@ -2,6 +2,7 @@ package sda.training.angry_nerds_game.schema;
 
 import lombok.Data;
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -17,5 +18,4 @@ public class AngryNerdsPlayer {
         private Integer gamesLost;
         @OneToMany(mappedBy = "player")
         private Set<AngryNerdsShot> shot;
-
 }
