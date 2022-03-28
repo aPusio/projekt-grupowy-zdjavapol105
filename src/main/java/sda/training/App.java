@@ -1,5 +1,6 @@
 package sda.training;
 
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import sda.training.learning.Car;
@@ -8,13 +9,17 @@ import java.util.Scanner;
 
 public class App
 {
-    public static void main( String[] args )
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(App.class);
+
+    public static void main(String[] args )
     {
         System.out.println( "Hello World!" );
 
         HibernateFactory hibernateFactory = new HibernateFactory();
         SessionFactory sessionFactory = hibernateFactory.getSessionFactory();
         Session session = sessionFactory.openSession();
+
+        log.error("HELLO FROM LOGGER! {}", "ARGUMENT");
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("WYBIERZ GRE: ");
