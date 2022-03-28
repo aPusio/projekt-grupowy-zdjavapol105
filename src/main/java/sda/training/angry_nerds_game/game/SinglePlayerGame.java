@@ -26,7 +26,7 @@ public class SinglePlayerGame {
         //TODO zrobić losowanie pozycji i wielkosci celu
 
         Target target = new Target();
-        target.initBoxTarget(100, 10, 10, 5, 'T');
+        target.initBoxTarget();
 
 
         Shot shot = new Shot();
@@ -56,6 +56,12 @@ public class SinglePlayerGame {
 
             if(gameBoard.checkConflict(shot.getShot(), target.getTarget())){
              life++;
+             target.initBoxTarget();
+
+                gameBoard.clearBoard();
+                gameBoard.setPoints(target.getTarget());
+                if(!SingletonGameConfig.getInstance().color) consoleScreen.showScreen(gameBoard.gameBoard);
+                else consoleScreen.showColorScreen(gameBoard.gameBoard);
             }
             else life--;
 

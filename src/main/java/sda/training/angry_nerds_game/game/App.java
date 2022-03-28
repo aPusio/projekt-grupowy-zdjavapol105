@@ -26,9 +26,7 @@ public class App {
         //TODO zrobić losowanie pozycji i wielkosci celu
 
         Target target = new Target();
-        target.initBoxTarget(100,10,10,5,'T');
-
-
+        target.initBoxTarget();
 
         // wywołac w pętli ilu bedzie graczy
 
