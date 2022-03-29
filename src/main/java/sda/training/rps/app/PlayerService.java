@@ -6,6 +6,7 @@ import sda.training.rps.model.Player;
 import sda.training.rps.util.ScannerSingleton;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerService {
     private final PlayerDao playerDao = new PlayerDao();
@@ -13,10 +14,10 @@ public class PlayerService {
 
     public Player choosePlayer() {
         String name = insertName();
-        Player player = playerDao.findByName(name);
+        Optional<Player> optionalPlayer = playerDao.findByName(name);
 
-
-        if (player != null) {
+        if (optionalPlayer.isPresent()) {
+            Player player = optionalPlayer.get();
             System.out.println("Witaj "
                     + player.getName()
                     + "! Twój dotychczasowy wynik to: "

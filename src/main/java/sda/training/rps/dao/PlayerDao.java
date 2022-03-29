@@ -23,7 +23,7 @@ public class PlayerDao {
     }
 
 
-    public Player findByName(String name) {
+    public Optional<Player> findByName(String name) {
         try (SessionFactory factory = new HibernateFactory().getSessionFactory();
              Session session = factory.openSession()) {
             Optional<Player> optional = session.createQuery("FROM Player p WHERE name = :n", Player.class)
@@ -31,7 +31,7 @@ public class PlayerDao {
                     .uniqueResultOptional();
             session.close();
             factory.close();
-            return optional.orElse(null);
+            return optional;
         }
     }
 

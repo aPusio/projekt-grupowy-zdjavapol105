@@ -68,36 +68,45 @@ public class StageService {
         if (stages.size() < 10) {
             return Move.getMoveById(random.nextInt(7));
         } else {
-            List<Move> moves = stages.stream().map(Stage::getPlayerMove).collect(Collectors.toList());
-            Map<Move, Integer> playerMoves = new HashMap<>();
-            for (Move playerMove : moves) {
-                Integer numberOfMoves = playerMoves.get(playerMove);
-                playerMoves.put(playerMove, numberOfMoves == null ? 1 : numberOfMoves + 1);
-            }
-            List<Move> playerCommonMoves = playerMoves
-                    .entrySet()
-                    .stream()
-                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                    .limit(2)
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
+            List<Move> playerCommonMoves = getPlayerMostMoves(stages);
 
-            List<Move> firstCounterMoves = getCounter(playerCommonMoves.get(0));
-            List<Move> secondCounterMoves;
-            if (playerCommonMoves.size() > 1) {
-                secondCounterMoves = getCounter(playerCommonMoves.get(1));
-            } else {
-                secondCounterMoves = getCounter(Move.OTHER);
-            }
-            List<Move> counterMoves = new ArrayList<>(firstCounterMoves);
-
-            counterMoves.retainAll(secondCounterMoves);
-            if (counterMoves.size() == 0) {
-                return firstCounterMoves.get(random.nextInt(3));
-            } else {
-                return counterMoves.get(random.nextInt(counterMoves.size()));
-            }
+            return getFinalComputerMove(random, playerCommonMoves);
         }
+    }
+
+    private Move getFinalComputerMove(Random random, List<Move> playerCommonMoves) {
+        List<Move> firstCounterMoves = getCounter(playerCommonMoves.get(0));
+        List<Move> secondCounterMoves;
+
+        if (playerCommonMoves.size() > 1) {
+            secondCounterMoves = getCounter(playerCommonMoves.get(1));
+        } else {
+            secondCounterMoves = getCounter(Move.OTHER);
+        }
+        List<Move> counterMoves = new ArrayList<>(firstCounterMoves);
+
+        counterMoves.retainAll(secondCounterMoves);
+        if (counterMoves.size() == 0) {
+            return firstCounterMoves.get(random.nextInt(3));
+        } else {
+            return counterMoves.get(random.nextInt(counterMoves.size()));
+        }
+    }
+
+    private List<Move> getPlayerMostMoves(List<Stage> stages) {
+        List<Move> moves = stages.stream().map(Stage::getPlayerMove).collect(Collectors.toList());
+        Map<Move, Integer> playerMoves = new HashMap<>();
+        for (Move playerMove : moves) {
+            Integer numberOfMoves = playerMoves.get(playerMove);
+            playerMoves.put(playerMove, numberOfMoves == null ? 1 : numberOfMoves + 1);
+        }
+        return playerMoves
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(2)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     private List<Move> getCounter(Move move) {

@@ -14,7 +14,6 @@ import java.util.Objects;
 public class GameDao {
 
     public Game findById(int id) {
-
         try (SessionFactory factory = new HibernateFactory().getSessionFactory();
              Session session = factory.openSession()) {
             Game game = session.find(Game.class, id);

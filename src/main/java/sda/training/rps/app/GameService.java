@@ -15,7 +15,7 @@ import java.util.Objects;
 public class GameService {
     private final GameDao gameDao = new GameDao();
     private final StageDao stageDao = new StageDao();
-    private Game game = new Game();
+    private Game game;
     private final PlayerService playerService;
     private final StageService stageService;
     private final ScannerSingleton scanner = ScannerSingleton.getInstance();
@@ -37,7 +37,7 @@ public class GameService {
     }
 
     private Game createGame(Player player, int winStagesNo) {
-        game.setId(null);
+        game = new Game();
         game.setWinStagesNo(winStagesNo);
         game.setPlayer(player);
         game.setComputerScore(0);

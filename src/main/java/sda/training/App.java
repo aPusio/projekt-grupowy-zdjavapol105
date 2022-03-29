@@ -1,5 +1,7 @@
 package sda.training;
 
+import sda.training.rps.app.RPSGameCreator;
+
 import java.util.Scanner;
 
 public class App {
@@ -17,8 +19,8 @@ public class App {
             int gameNumber = scanner.nextInt();
             switch (gameNumber) {
                 case 1:
-                    sda.training.rps.app.App app = new sda.training.rps.app.App();
-                    app.startRPS();
+                    RPSGameCreator RPSGameCreator = new RPSGameCreator();
+                    RPSGameCreator.startRPS();
                     break;
                 case 2:
                     System.out.println("Zaimplementuj mnie 🤣");

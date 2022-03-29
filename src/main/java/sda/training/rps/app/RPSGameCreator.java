@@ -4,7 +4,7 @@ import sda.training.rps.model.Player;
 import sda.training.rps.util.MainMenu;
 import sda.training.rps.util.ScannerSingleton;
 
-public class App {
+public class RPSGameCreator {
     private Player player;
     private final PlayerService playerService = new PlayerService();
     private final GameService gameService = new GameService(playerService);

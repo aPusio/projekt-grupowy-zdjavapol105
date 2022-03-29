@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import sda.training.learning.Car;
 import sda.training.rps.model.Game;
 import sda.training.rps.model.Player;
 import sda.training.rps.model.Stage;
@@ -18,6 +19,8 @@ public class HibernateFactory {
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+
+        configuration.addAnnotatedClass(Car.class);
 
         configuration.addAnnotatedClass(Game.class);
         configuration.addAnnotatedClass(Player.class);
