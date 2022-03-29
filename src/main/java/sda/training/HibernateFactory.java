@@ -1,9 +1,13 @@
 package sda.training;
 
+
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+
+import sda.training.angry_nerds_game.schema.AngryNerdsDBPlayer;
+import sda.training.angry_nerds_game.schema.AngryNerdsDBShot;
 import sda.training.learning.Car;
 
 public class HibernateFactory {
@@ -16,10 +20,11 @@ public class HibernateFactory {
         configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
 
-        configuration.addAnnotatedClass(Car.class);
-        return configuration;
-    }
+        configuration.addAnnotatedClass(AngryNerdsDBPlayer.class);
+        configuration.addAnnotatedClass(AngryNerdsDBShot.class);
 
+       return configuration;
+    }
     public SessionFactory getSessionFactory() {
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .applySettings(getHibernateConfig().getProperties()).build();
