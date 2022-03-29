@@ -2,7 +2,6 @@ package sda.training;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import sda.training.learning.Car;
 
 import java.util.Scanner;
 
@@ -46,10 +45,10 @@ public class App
         sessionFactory.close();
     }
 
-    private static Car storingCarInDb(Session session) {
-        Car car = new Car();
-        car.setName("maluch");
-        session.save(car);
-        return car;
-    }
+//    private static Car storingCarInDb(Session session) {
+//        Car car = new Car();
+//        car.setName("maluch");
+//        session.save(car);
+//        return car;
+//    }
 }

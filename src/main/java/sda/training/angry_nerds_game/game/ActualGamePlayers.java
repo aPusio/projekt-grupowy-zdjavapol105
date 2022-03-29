@@ -1,7 +1,5 @@
 package sda.training.angry_nerds_game.game;
 
-import sda.training.angry_nerds_game.schema.AngryNerdsPlayer;
-
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -22,7 +20,7 @@ public class ActualGamePlayers {
 
     public void addAngryNerdsPlayer(){
 
-        players.add(new AngryNerdsPlayer(getPlayerName()));
+        players.add(new AngryNerdsPlayer((getPlayerName())));
 
     }
 

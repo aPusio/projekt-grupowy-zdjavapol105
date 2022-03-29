@@ -3,7 +3,6 @@ package sda.training.angry_nerds_game;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import sda.training.HibernateFactory;
-import sda.training.learning.Car;
 
 public class AppTest {
     public static void main(String[] args) {

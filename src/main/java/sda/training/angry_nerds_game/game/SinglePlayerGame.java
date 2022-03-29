@@ -1,76 +1,76 @@
 package sda.training.angry_nerds_game.game;
 
-import sda.training.angry_nerds_game.schema.AngryNerdsPlayer;
-import sda.training.angry_nerds_game.schema.AngryNerdsShot;
+import java.util.concurrent.TimeUnit;
 
 public class SinglePlayerGame {
 
-
     public void startGame() {
 
-        AngryNerdsPlayer actualPlayer;
-
+        AngryNerdsPlayer actualPlayer = null;
         ConsoleScreen consoleScreen = new ConsoleScreen();
-
         GameBoard gameBoard = new GameBoard();
-        gameBoard.clearBoard();
-
         ActualGamePlayers players = new ActualGamePlayers();
+        Point sonda = new Point(0, 0, 'S');
+        Target target = new Target();
+        Shot shot = new Shot();
+
         players.addAngryNerdsPlayer();
 
-
-        Point sonda = new Point(0, 0, 'S');
-        gameBoard.setPoint(sonda);
-
-
-        //TODO zrobić losowanie pozycji i wielkosci celu
-
-        Target target = new Target();
         target.initBoxTarget();
+        gameBoard.clearBoard();
 
+        showScreen(gameBoard, sonda, target, shot, consoleScreen);
+        actualPlayer = players.getPlayers().peek();
 
-        Shot shot = new Shot();
-        AngryNerdsShot angryNerdsShot = new AngryNerdsShot();
-
-        gameBoard.setPoints(target.getTarget());
-
-        if(!SingletonGameConfig.getInstance().color) consoleScreen.showScreen(gameBoard.gameBoard);
-        else consoleScreen.showColorScreen(gameBoard.gameBoard);
-
-        int life =5;
-
-        while (life>0) {
-
-            // TODO okreslić jak ma wyglądac rozgrywka i parametry wyjscia z pętli
+        while (actualPlayer.getLife()>0) {
 
             actualPlayer = players.getPlayers().poll();
-            System.out.println(actualPlayer.getName()+" Pozostało Ci jeszcze :"+life+" żyć");
+            System.out.println(actualPlayer.getName()+" Pozostało Ci jeszcze :"+actualPlayer.getLife()+" żyć. Twój wynik ="+actualPlayer.getScore()+" trafień");
 
-            angryNerdsShot.enterShotValues();
+            shot.enterShotValues();
 
-            shot.genarateShotLine(angryNerdsShot.getShotX(), angryNerdsShot.getShotY(), 0, 1);
-            gameBoard.setPoints(shot.getShot());
+            showScreen(gameBoard, sonda, target, shot, consoleScreen);
 
-            if(!SingletonGameConfig.getInstance().color) consoleScreen.showScreen(gameBoard.gameBoard);
-            else consoleScreen.showColorScreen(gameBoard.gameBoard);
+            shot.genarateShotLine(shot.getShotX(), shot.getShotY(), 0, 1);
+
+            showScreen(gameBoard, sonda, target, shot, consoleScreen);
+
+            //TODO : w tym miejscu mozna wysłac dane do bazy danych o graczu ID  targecie shocie ...
 
             if(gameBoard.checkConflict(shot.getShot(), target.getTarget())){
-             life++;
-             target.initBoxTarget();
+                actualPlayer.setLife(actualPlayer.getLife()+1);
+                actualPlayer.setScore(actualPlayer.getScore()+1);
+
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                target.initBoxTarget();
+                shot.getShot().clear();
 
                 gameBoard.clearBoard();
-                gameBoard.setPoints(target.getTarget());
-                if(!SingletonGameConfig.getInstance().color) consoleScreen.showScreen(gameBoard.gameBoard);
-                else consoleScreen.showColorScreen(gameBoard.gameBoard);
-            }
-            else life--;
+                showScreen(gameBoard, sonda, target, shot, consoleScreen);
 
-            //TODO : w tym miejscu mozna wysłac dane do bazy danych o graczu targecie shocie ...
+            }
+            else actualPlayer.setLife(actualPlayer.getLife()-1);
 
             gameBoard.clearBoard();
             gameBoard.setPoints(target.getTarget());
             shot.getShot().clear();
             players.getPlayers().add(actualPlayer);
         }
+
+        System.out.println(actualPlayer.getName()+" Koniec Gry. Twój wynik ="+actualPlayer.getScore()+" trafień");
+
+        //TODO : w tym miejscu mozna wysłac dane do bazy danych o graczu i aktualnym wyniku ...
+    }
+
+    private void showScreen(GameBoard gameBoard, Point sonda, Target target, Shot shot, ConsoleScreen consoleScreen) {
+        gameBoard.setPoint(sonda);
+        gameBoard.setPoints(target.getTarget());
+        gameBoard.setPoints(shot.getShot());
+        if(!SingletonGameConfig.getInstance().color) consoleScreen.showScreen(gameBoard.gameBoard);
+        else consoleScreen.showColorScreen(gameBoard.gameBoard);
     }
 }

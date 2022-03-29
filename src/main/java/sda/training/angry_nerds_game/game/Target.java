@@ -35,16 +35,17 @@ public class Target {
     public void generateSizeXY(){
         Random random = new Random();
 
-        xSize = random.nextInt(20,80);
-        ySize = random.nextInt(3,9);
+        xSize = random.nextInt( 60)+20;
+        ySize = random.nextInt(6)+3;
+
     }
 
     public void generatePositionXY(){
 
         Random random = new Random();
 
-        xPosition = random.nextInt(50,SingletonGameConfig.getInstance().getMaxX()-xSize);
-        yPosition = random.nextInt(5,SingletonGameConfig.getInstance().getMaxY())-ySize;
+        xPosition = random.nextInt(SingletonGameConfig.getInstance().getMaxX()-xSize-50)+50;
+        yPosition = random.nextInt(SingletonGameConfig.getInstance().getMaxY()-ySize-5)+5;
 
     }
 
