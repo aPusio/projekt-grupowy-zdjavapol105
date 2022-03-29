@@ -3,8 +3,7 @@ package sda.training.angry_nerds_game.schema;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+
 
 @Entity
 @Data

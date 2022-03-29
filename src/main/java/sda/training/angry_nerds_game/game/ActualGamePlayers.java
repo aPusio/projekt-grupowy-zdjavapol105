@@ -1,5 +1,7 @@
 package sda.training.angry_nerds_game.game;
 
+import sda.training.angry_nerds_game.schema.AngryNerdsDBPlayer;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -20,7 +22,17 @@ public class ActualGamePlayers {
 
     public void addAngryNerdsPlayer(){
 
-        players.add(new AngryNerdsPlayer((getPlayerName())));
+        String playerName= getPlayerName();
+
+        AngryNerdsDBPlayer angryNerdsDBPlayer = new AngryNerdsDBPlayer();
+
+
+        angryNerdsDBPlayer.setName(playerName);
+
+        // zapisac w bazie gracza i pobrać jego id z bazy
+        // do lokalnego gracza przekazac Id konstruktorem
+
+        players.add(new AngryNerdsPlayer(playerName));
 
     }
 

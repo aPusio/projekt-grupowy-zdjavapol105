@@ -1,10 +1,12 @@
 package sda.training;
 
+
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import sda.training.learning.Car;
 
 public class HibernateFactory {
     private Configuration getHibernateConfig() {
@@ -16,9 +18,8 @@ public class HibernateFactory {
         configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
 
-        return configuration;
+       return configuration;
     }
-
     public SessionFactory getSessionFactory() {
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .applySettings(getHibernateConfig().getProperties()).build();

@@ -6,7 +6,8 @@ public class SinglePlayerGame {
 
     public void startGame() {
 
-        AngryNerdsPlayer actualPlayer = null;
+        AngryNerdsPlayer actualPlayer;
+        CopyToDBClass copyToDBClass = new CopyToDBClass();
         ConsoleScreen consoleScreen = new ConsoleScreen();
         GameBoard gameBoard = new GameBoard();
         ActualGamePlayers players = new ActualGamePlayers();
@@ -35,7 +36,7 @@ public class SinglePlayerGame {
 
             showScreen(gameBoard, sonda, target, shot, consoleScreen);
 
-            //TODO : w tym miejscu mozna wysłac dane do bazy danych o graczu ID  targecie shocie ...
+            copyToDBClass.copyValuesToAngryNerdsDBShot(shot,target,actualPlayer);
 
             if(gameBoard.checkConflict(shot.getShot(), target.getTarget())){
                 actualPlayer.setLife(actualPlayer.getLife()+1);

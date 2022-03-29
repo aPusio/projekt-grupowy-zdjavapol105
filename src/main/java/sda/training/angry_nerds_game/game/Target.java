@@ -1,5 +1,7 @@
 package sda.training.angry_nerds_game.game;
 
+import sda.training.angry_nerds_game.schema.AngryNerdsDBShot;
+
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -19,6 +21,22 @@ public class Target {
         return target;
     }
 
+    public int getxPosition() {
+        return xPosition;
+    }
+
+    public int getyPosition() {
+        return yPosition;
+    }
+
+    public int getxSize() {
+        return xSize;
+    }
+
+    public int getySize() {
+        return ySize;
+    }
+
     public void initBoxTarget(){
 
         target.clear();
@@ -32,15 +50,15 @@ public class Target {
         }
     }
 
-    public void generateSizeXY(){
+    private void generateSizeXY(){
         Random random = new Random();
 
-        xSize = random.nextInt( 60)+20;
+        xSize = random.nextInt( 20)+20;
         ySize = random.nextInt(6)+3;
 
     }
 
-    public void generatePositionXY(){
+    private void generatePositionXY(){
 
         Random random = new Random();
 
@@ -48,7 +66,6 @@ public class Target {
         yPosition = random.nextInt(SingletonGameConfig.getInstance().getMaxY()-ySize-5)+5;
 
     }
-
 
 
 }
