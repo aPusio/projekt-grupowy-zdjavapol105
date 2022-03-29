@@ -33,7 +33,7 @@ public class MainMenu {
     }
 
     public void clearMenu() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 40; i++) {
             System.out.println();
             //drukuje 20 pustych lini zeby to jakoś wyglądało
         }
@@ -55,11 +55,12 @@ public class MainMenu {
                 case 2:
                     clearMenu();
                     System.out.println("Wybrałeś Load Game :");
-
+                    System.out.println("To jeszcze nie działa ...");
                     break;
                 case 3:
                     clearMenu();
                     System.out.println("Wybrałeś Game Settings :");
+                    System.out.println("To jeszcze nie działa ...");
                     break;
                 case 4:
                     clearMenu();
@@ -73,6 +74,8 @@ public class MainMenu {
         } while (wybor != 4);
 
     }
+
+    //TODO nie kopiowac kodu ... prezniesc do Singleton'a
 
     private int EnterNumber() {
         Scanner scanner = new Scanner(System.in);

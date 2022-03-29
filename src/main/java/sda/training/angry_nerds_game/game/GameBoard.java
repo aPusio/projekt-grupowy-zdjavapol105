@@ -5,10 +5,7 @@ import java.util.Set;
 
 public class GameBoard {
 
-    private final static int MAX_X = 181;
-    private final static int MAX_Y = 31;
-
-    int[][] gameBoard = new int[MAX_X][MAX_Y];
+    int[][] gameBoard = SingletonGameConfig.getInstance().getGameBoard();
 
 
     public void setPoint(Point point) {
@@ -32,12 +29,16 @@ public class GameBoard {
     }
 
 
-    public void checkConflict(Set<Point> shot, Set<Point> target) {
-        Set<Point> iloczyn = new HashSet<>(shot);
-        iloczyn.retainAll(target);
-        if (iloczyn.size() > 0) System.out.println("Trafiony !!! ");
-        else System.out.println("Chybiłeś :( ");
+    public boolean checkConflict(Set<Point> shot, Set<Point> target) {
+        Set<Point> union = new HashSet<>(shot);
+        union.retainAll(target);
+        if (union.size() > 0) {
+            System.out.println("Trafiony !!! ");
+            return true;
+        }
+        else {
+            System.out.println("Chybiłeś :( ");
+            return false;
+        }
     }
-
-
 }
