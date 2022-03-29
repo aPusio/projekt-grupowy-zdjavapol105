@@ -11,6 +11,11 @@ public class AngryNerdsPlayer {
         this.name = name;
     }
 
+    public AngryNerdsPlayer(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getLife() {
         return life;
     }

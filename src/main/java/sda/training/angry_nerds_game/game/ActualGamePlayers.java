@@ -1,5 +1,6 @@
 package sda.training.angry_nerds_game.game;
 
+import sda.training.angry_nerds_game.dao.GenericDaoImpl;
 import sda.training.angry_nerds_game.schema.AngryNerdsDBPlayer;
 
 import java.util.LinkedList;
@@ -31,8 +32,11 @@ public class ActualGamePlayers {
 
         // zapisac w bazie gracza i pobrać jego id z bazy
         // do lokalnego gracza przekazac Id konstruktorem
+        GenericDaoImpl genericDao = new GenericDaoImpl(AngryNerdsDBPlayer.class);
+        genericDao.insertObject(angryNerdsDBPlayer);
 
-        players.add(new AngryNerdsPlayer(playerName));
+
+        players.add(new AngryNerdsPlayer(angryNerdsDBPlayer.getId(), playerName));
 
     }
 

@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "Angry_Player")
+@Table(name = "AngryTest_Player")
 public class AngryNerdsDBPlayer {
 
         @Id
@@ -19,4 +19,5 @@ public class AngryNerdsDBPlayer {
         private Integer gamesLost;
         @OneToMany(mappedBy = "player")
         private Set<AngryNerdsDBShot> shot;
+
 }

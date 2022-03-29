@@ -6,6 +6,8 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import sda.training.angry_nerds_game.schema.AngryNerdsDBPlayer;
+import sda.training.angry_nerds_game.schema.AngryNerdsDBShot;
 import sda.training.learning.Car;
 
 public class HibernateFactory {
@@ -17,6 +19,9 @@ public class HibernateFactory {
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+
+        configuration.addAnnotatedClass(AngryNerdsDBPlayer.class);
+        configuration.addAnnotatedClass(AngryNerdsDBShot.class);
 
        return configuration;
     }
